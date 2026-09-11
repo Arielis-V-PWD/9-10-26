@@ -63,7 +63,7 @@ http.createServer((req, res) => {
             visitorCount: visitorCount,
             uptimeSeconds: process.uptime(),
         }
-        res.writeHead(200, { 'Content type': 'application/json' });
+        res.writeHead(200, { 'Content Type': 'application/json' });
         return res.end(JSON.stringify(stats));
     }
 

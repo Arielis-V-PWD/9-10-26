@@ -6,16 +6,27 @@
 </head>
 
 <body class="{{THEME_CLASS}}">
-    <h1>my many projects!</h1>
+    <h1>shoutbox</h1>
+    <form action="/shoutbox" method="GET" class="shout-form">
+        <input type="text" name="msg" placeholder="Type a message..." required>
+        <button type="submit">Shout!</button>
+    </form>
+
+    <div class="shoutbox">
+        <ul>
+            {{MESSAGES}}
+        </ul>
+    </div>
 
     <nav>
         <a href="/">home</a>
         <a href="/?theme=light">light Mode</a>
         <a href="/?theme=dark">Dark Mode</a>
         <a href="/about">about</a>
-        <a href="/shoutbox">Shoutbox</a>
         <a href="/projects">Projects</a>
+        <a href="/shoutbox">Shoutbox</a>
     </nav>
+
 
 </body>
 

@@ -6,6 +6,7 @@ const PORT = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
 let visitorCount = 0;
+const messages = [];
 
 const fortunes = [
     "You will earn lots of money.",
@@ -63,6 +64,7 @@ http.createServer((req, res) => {
             visitorCount: visitorCount,
             uptimeSeconds: process.uptime(),
         }
+
         res.writeHead(200, { 'Content Type': 'application/json' });
         return res.end(JSON.stringify(stats));
     }
@@ -83,6 +85,8 @@ http.createServer((req, res) => {
             return res.end('<h1>404: Page Not Found</h1>');
         }
 
+        const messageListHTML = messages.map(msg => `<li>${msg}</li>`).join('');
+
         let finalContent = content;
 
         if (ext === '.html') {
@@ -99,6 +103,13 @@ http.createServer((req, res) => {
                 console.log(`[VISIT #${visitorCount}] Connection from: ${req.socket.remoteAddress}`);
             }
 
+            const newMsg = parsedUrl.searchParams.get('msg');
+            if (newMsg) {
+                messages.push(newMsg);
+                res.writeHead(302, { 'Location': '/shoutbox' });
+                return res.end();
+            }
+
             // Server-Driven Theme Handling
             const theme = parsedUrl.searchParams.get('theme') === 'dark' ? 'dark-mode' : 'light-mode';
 
@@ -107,7 +118,8 @@ http.createServer((req, res) => {
                 .replace('{{COUNT}}', String(visitorCount))
                 .replace('{{FORTUNE}}', randomFortune)
                 .replace('{{THEME_CLASS}}', theme)
-                .replace('{{ANIMAL_FACT}}', animalFact);
+                .replace('{{ANIMAL_FACT}}', animalFact)
+                .replace('{{MESSAGES}}', messageListHTML);
         }
 
         console.log(`[REQUEST] ${req.socket.remoteAddress} accessed ${normalizedPath}`);

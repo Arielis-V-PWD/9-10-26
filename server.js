@@ -7,7 +7,12 @@ const PORT = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
 let visitorCount = 0;
-const messages = [];
+
+function getSavedMessages() {
+    const DATA_FILE = path.join(__dirname, 'messages.json');
+    if (!fs.existsSync(DATA_FILE)) return ['server booted up'];
+    return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+}
 
 const fortunes = [
     "You will earn lots of money.",
@@ -40,7 +45,7 @@ http.createServer((req, res) => {
     const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const reqPath = parsedUrl.pathname;
 
-    const clientIp = req.headers['x-forward for'] || req.socket.remoteAddress;
+    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     const logLine =
         `[${new Date().toISOString()}] IP: ${clientIp} [${req.method}] Path: ${reqPath}\n`;
     fs.appendFile(path.join(__dirname, 'server.log'), logLine, (err) => {
@@ -71,9 +76,9 @@ http.createServer((req, res) => {
         const stats = {
             visitorCount: visitorCount,
             uptimeSeconds: process.uptime(),
-        }
+        };
 
-        res.writeHead(200, { 'Content Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify(stats));
     }
 
@@ -89,11 +94,18 @@ http.createServer((req, res) => {
 
     fs.readFile(filePath, (err, content) => {
         if (err) {
-            res.writeHead(404, { 'Content-Type': 'text/html' });
-            return res.end('<h1>404: Page Not Found</h1>');
+            if (err.code === 'ENOENT') {
+                res.writeHead(404, { 'Content-Type': 'text/html' });
+                return res.end('<h1>404: Page Not Found</h1>');
+            }
+
+            console.error('File read error:', err);
+            res.writeHead(500, { 'Content-Type': 'text/html' });
+            return res.end('<h1>500: Internal Server Error</h1>');
         }
 
-        const messageListHTML = messages.map(msg => `<li>${msg}</li>`).join('');
+        const savedMessages = getSavedMessages();
+        const messageListHTML = savedMessages.map(msg => `<li>${msg}</li>`).join('');
 
         let finalContent = content;
 
@@ -113,15 +125,11 @@ http.createServer((req, res) => {
 
             const newMsg = parsedUrl.searchParams.get('msg');
 
-            const DATA_FILE = path.join(__dirname, 'messsages.json');
-
-            function getSavedMessages() {
-                if (fs.existsSync(DATA_FILE)) return ["server booted up"];
-                return JSON.parse(fs.readFileSync(DATA_FILE));
-            }
-
             if (newMsg) {
-                messages.push(newMsg);
+                const updatedMessages = getSavedMessages();
+                updatedMessages.push(newMsg);
+                const DATA_FILE = path.join(__dirname, 'messages.json');
+                fs.writeFileSync(DATA_FILE, JSON.stringify(updatedMessages, null, 2));
                 res.writeHead(302, { 'Location': '/shoutbox' });
                 return res.end();
             }

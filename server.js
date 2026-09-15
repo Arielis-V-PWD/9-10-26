@@ -39,6 +39,13 @@ http.createServer((req, res) => {
     const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const reqPath = parsedUrl.pathname;
 
+    const clientIp = req.headers['x-forward for'] || req.socket.remoteAddress;
+    const logLine =
+        `[${new Date().toISOString()}] IP: ${clientIp} [${req.method}] Path: ${reqPath}\n`;
+    fs.appendFile(path.join(__dirname, 'server.log'), logLine, (err) => {
+        if (err) console.error('Log write failed', err);
+    });
+
     if (reqPath === '/goat') {
         res.writeHead(200, { 'Content-Type': 'text/html' });
         return res.end('<h1>You are the G.O.A.T!</h1>');

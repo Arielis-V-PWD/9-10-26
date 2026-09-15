@@ -1,0 +1,8 @@
+[2026-09-15T12:21:45.435Z] IP: 127.0.0.1 [GET] Path: /
+[2026-09-15T12:21:45.444Z] IP: 127.0.0.1 [GET] Path: /style.css
+[2026-09-15T12:21:45.446Z] IP: 127.0.0.1 [GET] Path: /goat.png
+[2026-09-15T12:21:55.404Z] IP: 127.0.0.1 [GET] Path: /shoutbox
+[2026-09-15T12:21:55.412Z] IP: 127.0.0.1 [GET] Path: /style.css
+[2026-09-15T12:22:05.037Z] IP: 127.0.0.1 [GET] Path: /shoutbox
+[2026-09-15T12:22:05.039Z] IP: 127.0.0.1 [GET] Path: /shoutbox
+[2026-09-15T12:22:05.044Z] IP: 127.0.0.1 [GET] Path: /style.css

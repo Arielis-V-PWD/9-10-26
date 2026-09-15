@@ -112,6 +112,14 @@ http.createServer((req, res) => {
             }
 
             const newMsg = parsedUrl.searchParams.get('msg');
+
+            const DATA_FILE = path.join(__dirname, 'messsages.json');
+
+            function getSavedMessages() {
+                if (fs.existsSync(DATA_FILE)) return ["server booted up"];
+                return JSON.parse(fs.readFileSync(DATA_FILE));
+            }
+
             if (newMsg) {
                 messages.push(newMsg);
                 res.writeHead(302, { 'Location': '/shoutbox' });

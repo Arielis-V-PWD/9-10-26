@@ -1,6 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const mime = require('mime-types');
 
 const PORT = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -22,18 +23,18 @@ const animalFacts = [
     "Bats are the only mammals that can fly."
 ];
 
-const MIME_TYPES = {
-    '.html': 'text/html',
-    '.css': 'text/css',
-    '.js': 'text/javascript',
-    '.png': 'image/png',
-    '.jpg': 'image/jpeg',
-    '.gif': 'image/gif',
-    '.svg': 'image/svg+xml',
-    '.mp4': 'video/mp4',
-    '.json': 'application/json',
-    '.ico': 'image/x-icon'
-};
+// const MIME_TYPES = {
+//     '.html': 'text/html',
+//     '.css': 'text/css',
+//     '.js': 'text/javascript',
+//     '.png': 'image/png',
+//     '.jpg': 'image/jpeg',
+//     '.gif': 'image/gif',
+//     '.svg': 'image/svg+xml',
+//     '.mp4': 'video/mp4',
+//     '.json': 'application/json',
+//     '.ico': 'image/x-icon'
+// };
 
 http.createServer((req, res) => {
     const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
@@ -84,7 +85,7 @@ http.createServer((req, res) => {
 
     const filePath = path.join(PUBLIC_DIR, normalizedPath);
     const ext = path.extname(filePath).toLowerCase();
-    const contentType = MIME_TYPES[ext] || 'text/plain';
+    const contentType = mime.lookup(filePath) || 'text/plain';
 
     fs.readFile(filePath, (err, content) => {
         if (err) {

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin page</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="{{THEME_CLASS}}">
+    <div class="page-shell">
+        <header class="topbar">
+            <h1>Admin page</h1>
+            <nav aria-label="Main navigation">
+                <a href="/">Home</a>
+                <a href="/?theme=light">Light Mode</a>
+                <a href="/?theme=dark">Dark Mode</a>
+                <a href="/about">About</a>
+                <a href="/projects">Projects</a>
+                <a href="/shoutbox">Shoutbox</a>
+                <a href="/admin">Admin</a>
+            </nav>
+        </header>
+
+        <main class="content-card admin-card">
+            <div class="admin-summary">
+                <p><strong>Total Home Visits:</strong> {{COUNT}}</p>
+            </div>
+
+            <div class="danger-box">
+                <h3>Danger Zone</h3>
+                <p>Wipe all public shoutbox entries stored in <code>messages.json</code>.</p>
+
+                <form action="/admin" method="GET" class="admin-form">
+                    <input type="hidden" name="action" value="clear">
+                    <button type="submit" class="danger-button"
+                        onclick="return confirm('Are you sure you want to clear all shoutbox messages? This action cannot be undone.')">
+                        Clear all Shoutbox Messages
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

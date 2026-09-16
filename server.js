@@ -7,9 +7,19 @@ const PORT = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
 let visitorCount = 0;
+const ipRequestCounts = new Map();
 
-function getSavedMessages() {
+function getSavedMessages(parsedUrl, res) {
     const DATA_FILE = path.join(__dirname, 'messages.json');
+
+    const action = parsedUrl && parsedUrl.searchParams ? parsedUrl.searchParams.get('action') : null;
+    if (action === 'clear' && res) {
+        const defaultMsg = ["All messages cleared by admin."];
+        fs.writeFileSync(DATA_FILE, JSON.stringify(defaultMsg, null, 2));
+
+        res.writeHead(302, { 'Location': '/admin' });
+        return res.end();
+    }
     if (!fs.existsSync(DATA_FILE)) return ['server booted up'];
     return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
 }
@@ -52,10 +62,38 @@ http.createServer((req, res) => {
         if (err) console.error('Log write failed', err);
     });
 
+    const now = Date.now();
+    const windowMs = 10000;
+    const maxRequests = 10;
+
+
+    for (const [ip, data] of ipRequestCounts) {
+        if (now > data.resetTime) {
+            ipRequestCounts.delete(ip);
+        }
+    }
+
+    const ipData = ipRequestCounts.get(clientIp) || { count: 0, resetTime: now + windowMs }
+
     if (reqPath === '/goat') {
         res.writeHead(200, { 'Content-Type': 'text/html' });
         return res.end('<h1>You are the G.O.A.T!</h1>');
     }
+
+
+    if (now > ipData.resetTime) {
+        ipData.count = 0;
+        ipData.resetTime = now + windowMs
+    }
+
+    ipData.count++;
+    ipRequestCounts.set(clientIp, ipData);
+
+    if (ipData.count > maxRequests) {
+        res.writeHead(429, { 'Content-Type': 'text/html', 'Retry-After': '10' });
+        return res.end('<h1>429 Too Many Requests</h1><p>Please wait 10 seconds.</p>')
+    }
+
 
     if (reqPath === '/roll') {
         const roll = Math.floor(Math.random() * 6) + 1;
@@ -104,7 +142,7 @@ http.createServer((req, res) => {
             return res.end('<h1>500: Internal Server Error</h1>');
         }
 
-        const savedMessages = getSavedMessages();
+        const savedMessages = getSavedMessages(parsedUrl, res);
         const messageListHTML = savedMessages.map(msg => `<li>${msg}</li>`).join('');
 
         let finalContent = content;
@@ -126,7 +164,7 @@ http.createServer((req, res) => {
             const newMsg = parsedUrl.searchParams.get('msg');
 
             if (newMsg) {
-                const updatedMessages = getSavedMessages();
+                const updatedMessages = getSavedMessages(parsedUrl, res);
                 updatedMessages.push(newMsg);
                 const DATA_FILE = path.join(__dirname, 'messages.json');
                 fs.writeFileSync(DATA_FILE, JSON.stringify(updatedMessages, null, 2));

@@ -1,31 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Station Arielis</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="{{THEME_CLASS}}">
-    <h1>Welcome to Station Arielis!</h1>
-    <img src="goat.png" alt="photo1">
-    <p>Goats are one of my favorite animals.</p>
-    <p>
-    <h3>Total server visits: <span id="visitCount">{{COUNT}}</span></h3>
-    </p>
+    <div class="page-shell">
+        <header class="topbar">
+            <h1>Welcome to Station Arielis!</h1>
+            <nav aria-label="Main navigation">
+                <a href="/">Home</a>
+                <a href="/?theme=light">Light Mode</a>
+                <a href="/?theme=dark">Dark Mode</a>
+                <a href="/about">About</a>
+                <a href="/projects">Projects</a>
+                <a href="/shoutbox">Shoutbox</a>
+                <a href="/admin">Admin</a>
+            </nav>
+        </header>
 
-    <p>your random fortune is: {{FORTUNE}}</p>
-    <p>your random animal fact is: {{ANIMAL_FACT}}</p>
+        <main class="content-card">
+            <section class="hero">
+                <img src="goat.png" alt="A goat standing in a calm setting">
 
-    <nav>
-        <a href="/">home</a>
-        <a href="/?theme=light">light Mode</a>
-        <a href="/?theme=dark">Dark Mode</a>
-        <a href="/about">about</a>
-        <a href="/projects">Projects</a>
-        <a href="/shoutbox">Shoutbox</a>
-    </nav>
+                <div class="intro">
+                    <p class="lead">Goats are one of my favorite animals.</p>
+                    <div class="visit-box">
+                        <h3>Total server visits: <span id="visitCount">{{COUNT}}</span></h3>
+                    </div>
+                </div>
+            </section>
 
-
+            <section class="facts">
+                <p><strong>Random fortune:</strong> {{FORTUNE}}</p>
+                <p><strong>Random animal fact:</strong> {{ANIMAL_FACT}}</p>
+            </section>
+        </main>
+    </div>
 </body>
 
 </html>

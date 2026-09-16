@@ -1,33 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shoutbox</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="{{THEME_CLASS}}">
-    <h1>shoutbox</h1>
-    <form action="/shoutbox" method="GET" class="shout-form">
-        <input type="text" name="msg" placeholder="Type a message..." required>
-        <button type="submit">Shout!</button>
-    </form>
+    <div class="page-shell shoutbox-page">
+        <header class="topbar">
+            <h1>Shoutbox</h1>
+            <nav aria-label="Main navigation">
+                <a href="/">Home</a>
+                <a href="/?theme=light">Light Mode</a>
+                <a href="/?theme=dark">Dark Mode</a>
+                <a href="/about">About</a>
+                <a href="/projects">Projects</a>
+                <a href="/shoutbox">Shoutbox</a>
+                <a href="/admin">Admin</a>
+            </nav>
+        </header>
 
-    <div class="shoutbox">
-        <ul>
-            {{MESSAGES}}
-        </ul>
+        <main class="content-card shoutbox-card">
+            <form action="/shoutbox" method="GET" class="shout-form">
+                <label class="sr-only" for="msg">Message</label>
+                <input id="msg" type="text" name="msg" placeholder="Type a message..." required>
+                <button type="submit">Shout!</button>
+            </form>
+
+            <div class="shoutbox">
+                <ul>
+                    {{MESSAGES}}
+                </ul>
+            </div>
+        </main>
     </div>
-
-    <nav>
-        <a href="/">home</a>
-        <a href="/?theme=light">light Mode</a>
-        <a href="/?theme=dark">Dark Mode</a>
-        <a href="/about">about</a>
-        <a href="/projects">Projects</a>
-        <a href="/shoutbox">Shoutbox</a>
-    </nav>
-
-
 </body>
 
 </html>

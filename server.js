@@ -2,6 +2,9 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const mime = require('mime-types');
+const os = require('os');
+const { Filter } = require('bad-words');
+const filter = new Filter();
 
 const PORT = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -143,6 +146,7 @@ http.createServer((req, res) => {
         }
 
         const savedMessages = getSavedMessages(parsedUrl, res);
+        if (!Array.isArray(savedMessages)) return; // redirect or non-array result handled inside getSavedMessages
         const messageListHTML = savedMessages.map(msg => `<li>${msg}</li>`).join('');
 
         let finalContent = content;
@@ -164,10 +168,17 @@ http.createServer((req, res) => {
             const newMsg = parsedUrl.searchParams.get('msg');
 
             if (newMsg) {
-                const updatedMessages = getSavedMessages(parsedUrl, res);
-                updatedMessages.push(newMsg);
+                const messages = getSavedMessages();
+                const cleanedInput = newMsg.replace(/\s+/g, ' ').trim();
+                const compactInput = cleanedInput.replace(/\s+/g, ' ');
+
+                const filteredMsg = filter.isProfane(compactInput)
+                    ? '[message removed]'
+                    : filter.clean(compactInput);
+
                 const DATA_FILE = path.join(__dirname, 'messages.json');
-                fs.writeFileSync(DATA_FILE, JSON.stringify(updatedMessages, null, 2));
+                messages.push(filteredMsg);
+                fs.writeFileSync(DATA_FILE, JSON.stringify(messages, null, 2));
                 res.writeHead(302, { 'Location': '/shoutbox' });
                 return res.end();
             }

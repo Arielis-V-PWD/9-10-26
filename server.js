@@ -12,6 +12,8 @@ const PUBLIC_DIR = path.join(__dirname, 'public');
 let visitorCount = 0;
 const ipRequestCounts = new Map();
 
+const MAINTENANCE_MODE = false; // Set to true to enable maintenance mode
+
 function getSavedMessages(parsedUrl, res) {
     const DATA_FILE = path.join(__dirname, 'messages.json');
 
@@ -54,7 +56,25 @@ const animalFacts = [
 //     '.ico': 'image/x-icon'
 // };
 
-http.createServer((req, res) => {
+const LOG_FILE = path.join(__dirname, 'server.log');
+const MAX_LOG_SIZE = 1024 * 1024;
+
+function trimLogFile() {
+    if (!fs.existsSync(LOG_FILE)) return;
+
+    const stats = fs.statSync(LOG_FILE);
+    console.log('log states:', JSON.stringify(stats, null, 2));
+    if (stats.size > MAX_LOG_SIZE) {
+        const logContent = fs.readFileSync(LOG_FILE, 'utf8');
+        const recentLines = logContent.split('\n').slice(-1000);
+        fs.writeFileSync(LOG_FILE, recentLines.join('\n'));
+
+    }
+}
+
+trimLogFile();
+
+http.createServer(async (req, res) => {
     const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const reqPath = parsedUrl.pathname;
 
@@ -83,6 +103,19 @@ http.createServer((req, res) => {
         return res.end('<h1>You are the G.O.A.T!</h1>');
     }
 
+    if (reqPath === '/proxy') {
+        try {
+            const response = await fetch('https://catfact.ninja/fact');
+            const data = await response.json();
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            return res.end(`<h1>Cat Fact</h1><p>${data.fact}</p><a href="/">Home</a>`);
+        } catch (err) {
+            console.error('Proxy error:', err);
+            res.writeHead(502, { 'Content-Type': 'text/html' });
+            return res.end('<h1>502 Bad Gateway</h1>');
+        }
+    }
+
 
     if (now > ipData.resetTime) {
         ipData.count = 0;
@@ -97,6 +130,10 @@ http.createServer((req, res) => {
         return res.end('<h1>429 Too Many Requests</h1><p>Please wait 10 seconds.</p>')
     }
 
+    if (MAINTENANCE_MODE && reqPath !== '/api/system') {
+        res.writeHead(503, { 'Content-Type': 'text/html', 'Retry-After': '300' });
+        return res.end('<h1>503 Maintenance mode</h1><p>We are upgrading the server. Back soon!</p>');
+    }
 
     if (reqPath === '/roll') {
         const roll = Math.floor(Math.random() * 6) + 1;
@@ -118,10 +155,22 @@ http.createServer((req, res) => {
             visitorCount: visitorCount,
             uptimeSeconds: process.uptime(),
         };
-
         res.writeHead(200, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify(stats));
     }
+
+    if (reqPath === '/api/system') {
+        const systemInfo = {
+            platform: os.platform(),
+            cpus: os.cpus().length,
+            freeMemoryMB: Math.round(os.freemem() / 1024 / 1024),
+            totalMemoryMB: Math.round(os.totalmem() / 1024 / 1024),
+            uptimeMinutes: Math.round(process.uptime() / 60),
+        };
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify(systemInfo, null, 2));
+    }
+
 
     // Route Normalization: Map root to index.html & append .html to extensionless routes
     let normalizedPath = reqPath === '/' ? '/index.html' : reqPath;

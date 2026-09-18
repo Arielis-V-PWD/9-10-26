@@ -1,0 +1,32 @@
+<div>
+    <p><strong>Os Platform:</strong><span id="platform">Loading...</span></p>
+    <p><strong>Cpu Cores:</strong><span id="cpus">Loading...</span></p>
+    <p><strong>Free Memory (MB):</strong><span id="memory">Loading...</span></p>
+    <p><strong>Uptime:</strong><span id="uptime">Loading...</span> seconds</p>
+
+</div>
+
+<br>
+
+<button id="refresh-btn">Refresh</button>
+<p><a href="/">Return Home</a></p>
+
+<script>
+
+    async function loadSystemStats() {
+        try {
+            const response = await fetch('api/system');
+            if (!response.ok) {
+                throw new Error('HTTP Error status: ${response.status}');
+            };
+            const data = await response.json();
+            console.log('fetched system stats:', data);
+        } catch (error) {
+            console.error('Fetch failed:', error);
+        }
+    };
+
+    document.getElementById('refresh-btn').addEventListener('click', loadSystemStats);
+    loadSystemStats();
+    setInterval(loadSystemStats, 5000);
+</script>

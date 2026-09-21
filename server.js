@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -169,6 +171,26 @@ http.createServer(async (req, res) => {
         };
         res.writeHead(200, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify(systemInfo, null, 2));
+    }
+
+    if (reqPath === '/shoutbox') {
+        const password = parsedUrl.searchParams.get('password');
+        const shoutboxPassword = process.env.SHOUTBOX_PASSWORD || 'Password123';
+        if (password !== shoutboxPassword) {
+            console.log('not correct password');
+            res.writeHead(401, { 'Content-Type': 'text/html' });
+            return res.end('<h1>401 Unauthorized</h1><p>Incorrect password.</p><a href="/">Go back</a>');
+        }
+    }
+
+    if (reqPath === '/admin') {
+        const password = parsedUrl.searchParams.get('password');
+        const adminPassword = process.env.ADMIN_PASSWORD || 'Admin123';
+        if (password !== adminPassword) {
+            console.log('not correct password');
+            res.writeHead(401, { 'Content-Type': 'text/html' });
+            return res.end('<h1>401 Unauthorized</h1><p>Incorrect password.</p><a href="/">Go back</a>');
+        }
     }
 
 

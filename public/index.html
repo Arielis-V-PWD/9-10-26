@@ -35,6 +35,24 @@
                 </div>
             </section>
 
+            <div class="login-card">
+                <h2>access the shoutbox</h2>
+                <form action="/shoutbox" method="GET">
+                    <label for="password">Enter password:</label>
+                    <input type="password" id="password" name="password" placeholder="enter password" required>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+
+            <div class="login-card">
+                <h2>access the admin panel</h2>
+                <form action="/admin" method="GET">
+                    <label for="password">Enter password:</label>
+                    <input type="password" id="password" name="password" placeholder="enter password" required>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+
             <section class="facts">
                 <p><strong>Random fortune:</strong> {{FORTUNE}}</p>
                 <p><strong>Random animal fact:</strong> {{ANIMAL_FACT}}</p>

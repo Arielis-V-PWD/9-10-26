@@ -1,0 +1,14 @@
+[
+  {
+    "id": "810ddac9-591c-4277-9479-b64157c811e3",
+    "name": "Test",
+    "msg": "Hello from the console",
+    "createdAt": "2026-10-01T12:21:18.917Z"
+  },
+  {
+    "id": "05efa04b-f5e9-4321-8db5-8ed4c8b86dc5",
+    "name": "ari",
+    "msg": "hello",
+    "createdAt": "2026-10-02T12:46:01.774Z"
+  }
+]

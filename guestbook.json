@@ -1,14 +1,21 @@
 [
   {
     "id": "810ddac9-591c-4277-9479-b64157c811e3",
-    "name": "Test",
-    "msg": "Hello from the console",
-    "createdAt": "2026-10-01T12:21:18.917Z"
+    "name": "Maya",
+    "msg": "I edited this!",
+    "createdAt": "2026-10-01T12:21:18.917Z",
+    "updatedAt": "2026-10-16T13:04:36.984Z"
   },
   {
-    "id": "05efa04b-f5e9-4321-8db5-8ed4c8b86dc5",
+    "id": "cb426bee-0b14-4f31-864a-2cf90290ca11",
+    "name": "ari",
+    "msg": "new message that is posted after part 2",
+    "createdAt": "2026-10-16T12:35:01.263Z"
+  },
+  {
+    "id": "67849c1a-a52f-4760-b667-a3248cf4df92",
     "name": "ari",
     "msg": "hello",
-    "createdAt": "2026-10-02T12:46:01.774Z"
+    "createdAt": "2026-10-16T12:40:34.530Z"
   }
 ]

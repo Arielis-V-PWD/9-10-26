@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create an account</title>
+    <link rel="stylesheet" href="/style.css" />
+</head>
+
+<body class="page page-home">
+    <main class="shell">
+        <header class="topbar">
+            <div class="brand">
+                <span class="brand-mark">☀</span>
+                <h1>Sunny Notes</h1>
+            </div>
+            <nav aria-label="Main navigation">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/guestbook">Guestbook</a></li>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <section class="hero-card">
+            <h1>Create an account</h1>
+
+            <form id="register-form">
+                <label for="username">Username</label>
+                <input id="username" autocomplete="username" minlength="3" maxlength="20" required />
+
+                <label for="password">Password (at least 8 characters)</label>
+                <input id="password" type="password" autocomplete="new-password" minlength="8" maxlength="72"
+                    required />
+
+                <label for="confirm">Confirm password</label>
+                <input id="confirm" type="password" autocomplete="new-password" required />
+
+                <button type="submit">Create account</button>
+            </form>
+            <p id="register-message" role="alert"></p>
+
+            <p>Already have an account? <a href="/">Log in</a></p>
+        </section>
+    </main>
+
+    <script src="/js/register.js"></script>
+</body>
+
+</html>

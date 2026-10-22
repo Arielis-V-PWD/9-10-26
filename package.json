@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "bad-words": "^4.1.5",
+    "bcryptjs": "^3.0.3",
     "dotenv": "^18.0.2",
     "express": "^5.2.1",
     "express-rate-limit": "^8.7.0",

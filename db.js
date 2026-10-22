@@ -4,25 +4,24 @@ const path = require('path');
 const crypto = require('crypto');
 
 const GUESTBOOK_FILE = path.join(__dirname, 'guestbook.json');
+const USERS_FILE = path.join(__dirname, 'users.json');
 const MAX_ENTRIES = 50;
 
-// ----- Private helpers (not exported) -----
-
-async function readAll() {
+async function readAll(file = GUESTBOOK_FILE) {
     try {
-        const text = await fs.readFile(GUESTBOOK_FILE, 'utf8');
+        const text = await fs.readFile(file, 'utf8');
         return JSON.parse(text);
     } catch (err) {
-        if (err.code === 'ENOENT') return []; // file doesn't exist yet
-        throw err; // anything else is a real problem for the error handler
+        if (err.code === 'ENOENT') return [];
+        throw err;
     }
 }
 
-async function writeAll(entries) {
-    await fs.writeFile(GUESTBOOK_FILE, JSON.stringify(entries, null, 2));
+async function writeAll(data, file = GUESTBOOK_FILE) {
+    await fs.writeFile(file, JSON.stringify(data, null, 2));
 }
 
-// ----- Public functions (exported) -----
+
 
 async function getAllEntries() {
     return readAll();
@@ -67,4 +66,32 @@ async function deleteEntry(id) {
     return true;
 }
 
-module.exports = { getAllEntries, getEntryById, addEntry, updateEntry, deleteEntry };
+async function getUserByUsername(username) {
+    const users = await readAll(USERS_FILE);
+    return users.find(u => u.username === username.toLowerCase()) || null;
+}
+
+// Takes a passwordHash, never a password
+async function addUser({ username, passwordHash, role = 'user' }) {
+    const users = await readAll(USERS_FILE);
+    const user = {
+        id: crypto.randomUUID(),
+        username: username.toLowerCase(),
+        passwordHash,
+        role,
+        createdAt: new Date().toISOString()
+    };
+    users.push(user);
+    await writeAll(users, USERS_FILE);
+    return user;
+}
+
+module.exports = {
+    getAllEntries,
+    getEntryById,
+    addEntry,
+    updateEntry,
+    deleteEntry,
+    getUserByUsername,
+    addUser
+};

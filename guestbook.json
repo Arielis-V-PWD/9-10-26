@@ -9,13 +9,14 @@
   {
     "id": "cb426bee-0b14-4f31-864a-2cf90290ca11",
     "name": "ari",
-    "msg": "new message that is posted after part 2",
-    "createdAt": "2026-10-16T12:35:01.263Z"
+    "msg": "new message that is posted after part 2 || edited part of comment",
+    "createdAt": "2026-10-16T12:35:01.263Z",
+    "updatedAt": "2026-10-19T12:21:35.498Z"
   },
   {
-    "id": "67849c1a-a52f-4760-b667-a3248cf4df92",
+    "id": "5b05cda1-6754-4b16-83dc-7527133270c6",
     "name": "ari",
-    "msg": "hello",
-    "createdAt": "2026-10-16T12:40:34.530Z"
+    "msg": "new message",
+    "createdAt": "2026-10-19T12:21:54.426Z"
   }
 ]

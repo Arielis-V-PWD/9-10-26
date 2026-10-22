@@ -10,7 +10,10 @@ async function checkAuthState() {
         const data = await response.json();
 
         if (data.loggedIn) {
-            status.innerHTML = '<h1>Welcome back!</h1><a href="/dashboard">Dashboard</a>';
+            status.textContent = '';
+            const heading = document.createElement('h1');
+            heading.textContent = `Welcome back, ${data.username}!`;
+            status.append(heading);
             loginSection.hidden = true;
             logoutButton.hidden = false;
         } else {
@@ -28,6 +31,7 @@ async function checkAuthState() {
 loginForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
+    const username = document.querySelector('#username').value;
     const password = document.querySelector('#password').value;
     const rememberMe = new FormData(loginForm).get('rememberMe') === 'on';
 
@@ -35,7 +39,7 @@ loginForm.addEventListener('submit', async (event) => {
         method: 'POST',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password, rememberMe })
+        body: JSON.stringify({ username, password, rememberMe })
     });
 
     const data = await response.json().catch(() => ({ success: false }));
@@ -44,9 +48,12 @@ loginForm.addEventListener('submit', async (event) => {
         loginMessage.textContent = 'Login successful!';
         loginForm.reset();
         await checkAuthState();
-        window.location.href = '/dashboard';
+
+        const myInfo = await fetch('/api/whoami', { credentials: 'same-origin' });
+        const me = await myInfo.json().catch(() => ({ role: 'user' }));
+        window.location.href = me.role === 'admin' ? '/dashboard' : '/guestbook';
     } else {
-        loginMessage.textContent = data.error || 'Login failed. Please check your password.';
+        loginMessage.textContent = data.error || 'Login failed. Please check your username and password.';
     }
 });
 

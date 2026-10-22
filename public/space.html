@@ -1,0 +1,19 @@
+<h1>Space Picture of the Day</h1>
+<style src="style.css"></style>
+<form id="space-form">
+    <label for="date">Pick a date</label>
+    <input type="date" id="date" min="1995-06-16" />
+    <button type="submit">Show picture</button>
+</form>
+
+<p id="status" role="status"></p>
+
+<article id="result" hidden>
+    <h2 id="title"></h2>
+    <p id="date-shown"></p>
+    <img id="picture" />
+    <p id="description"></p>
+    <a id="nasa-link" target="_blank" rel="noopener">Read the full story on NASA's website</a>
+</article>
+
+<script src="/js/space.js"></script>
